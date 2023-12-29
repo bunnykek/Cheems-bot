@@ -3,7 +3,7 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const fs = require('fs');
 
 
-// importing modules from the directory
+// importing modules from a directory
 const directoryPath = './modules';  
 
 const classFiles = fs.readdirSync(directoryPath)
