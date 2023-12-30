@@ -28,7 +28,7 @@ It will take few minutes depending on your internet connection.
   - operate() function.
 
 ### Modules To-do list:
-- [] Sticker (!sticker, !steal, !image, !square)
+- [ ] Sticker (!sticker, !steal, !image, !square)
 - [ ] Group management (!warn, !ban, !kick, )
 - [ ] Chat GPT (!gpt query...)
 - [ ] Music 
