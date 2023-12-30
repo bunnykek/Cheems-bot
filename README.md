@@ -26,3 +26,11 @@ It will take few minutes depending on your internet connection.
   - command variable. `command = ['!sticker', '!steal']`
   - description variable. `description = ['!sticker desc.', '!steal desc']`
   - operate() function.
+
+### Modules To-do list:
+- [x] Sticker
+- [ ] Group management
+- [ ] Chat GPT
+- [ ] Music
+- [ ] Year progress
+
