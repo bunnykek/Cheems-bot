@@ -28,9 +28,11 @@ It will take few minutes depending on your internet connection.
   - operate() function.
 
 ### Modules To-do list:
-- [x] Sticker
-- [ ] Group management
-- [ ] Chat GPT
-- [ ] Music
+- [] Sticker (!sticker, !steal, !image, !square)
+- [ ] Group management (!warn, !ban, !kick, )
+- [ ] Chat GPT (!gpt query...)
+- [ ] Music 
 - [ ] Year progress
-
+- [ ] Animal module (!cat, !dog, !otter, etc)
+- [ ] Meme (Using reddit [meme api](https://github.com/D3vd/Meme_Api))
+- [ ] youtube-dl (!ytdl url)
