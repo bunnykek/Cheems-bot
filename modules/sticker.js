@@ -3,6 +3,9 @@ const { Message } = require('whatsapp-web.js');
 class Sticker {
     /** @type {string[]} */
     command = ['!sticker', '!steal'];
+    
+    /** @type {string[]} */
+    description = ['Reply or send media with !sticker to get it back as a sticker', 'Reply to a sticker to steal it.'];
 
     /** @param {Message} msg */
     async operate(msg) {
