@@ -56,7 +56,7 @@ client.on('message', msg => {
   objects.forEach(obj => {
     obj.command.forEach(cmd => {
       if(msg.body.includes(cmd)){
-        obj.operate(msg);
+        obj.operate(msg, client);
       }
     })
   })
