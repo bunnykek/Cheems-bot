@@ -18,14 +18,13 @@ It will take few minutes depending on your internet connection.
 - To start the bot use the command `node bot.js` or `npm run test`
 
 ### Building modules guide:
-- Use [sticker](https://github.com/bunnykek/cheems-bot/blob/main/modules/sticker.js) module for reference.
-- Modules file must contain a single class.
-- Class name should be Title case. (Ex: Sticker, Chatgpt)
-- Module file should have same name as class but in lowecase (ex: sticker.js, chatgpt.js)
-- Class must contain these three things.
+- Use [sticker](https://github.com/bunnykek/cheems-bot/blob/main/modules/sticker/interface.js) module for reference.
+- Each module should contain a file named `"interface.js"`.
+- `"interface.js"` must contain a class named `"Module"`.
+- `"Module"` Class must contain these three things.
   - command variable. `command = ['!sticker', '!steal']`
-  - description variable. `description = ['!sticker desc.', '!steal desc']`
-  - operate() function.
+  - description variable. `description = ['!sticker desc.', '!steal desc.']`
+  - operate(client, message) function.
 
 ### Modules To-do list:
 - [ ] Sticker (!sticker, !steal, !image, !square)
