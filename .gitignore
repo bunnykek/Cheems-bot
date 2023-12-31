@@ -9,7 +9,7 @@ lerna-debug.log*
 
 .wwebjs_auth
 .wwebjs_cache
-modules/nitrr.js
+modules/nitrr
 
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
