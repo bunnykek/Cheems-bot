@@ -60,9 +60,13 @@ client.on('message', msg => {
   }
 
   moduleObjects.forEach(obj => {
-    obj.command.forEach(cmd => {
+    obj.command.forEach(async cmd => {
       if(msg.body.includes(cmd)){
-        obj.operate(client, msg);
+        try {
+          await obj.operate(client, msg);
+        } catch (error) {
+          console.log(error);
+        }
       }
     })
   })
