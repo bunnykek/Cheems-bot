@@ -2,6 +2,7 @@ env
 .wwebjs_auth/
 .wwebjs_cache/
 tmp
+Session.vim
 
 # Logs
 logs
