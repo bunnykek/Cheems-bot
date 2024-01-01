@@ -27,10 +27,10 @@ It will take few minutes depending on your internet connection.
   - operate(client, message) function.
 
 ### Modules To-do list:
-- [ ] Sticker (!sticker, !steal, !image, !square)
+- [x] Sticker (!sticker, !steal, !image, !square)
 - [ ] Group management (!warn, !ban, !kick, )
 - [ ] Chat GPT (!gpt query...)
-- [ ] Music 
+- [x] Music 
 - [ ] Year progress
 - [ ] Animal module (!cat, !dog, !otter, etc)
 - [ ] Meme (Using reddit [meme api](https://github.com/D3vd/Meme_Api))
