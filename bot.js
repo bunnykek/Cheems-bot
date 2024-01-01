@@ -62,7 +62,7 @@ client.on('message', msg => {
   moduleObjects.forEach(obj => {
     obj.command.forEach(cmd => {
       if(msg.body.includes(cmd)){
-        obj.operate(msg);
+        obj.operate(client, msg);
       }
     })
   })
