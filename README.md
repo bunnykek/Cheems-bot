@@ -28,9 +28,9 @@ It will take few minutes depending on your internet connection.
 
 ### Modules To-do list:
 - [x] Sticker (!sticker, !steal, !image, !square)
-- [ ] Group management (!warn, !ban, !kick, )
-- [ ] Chat GPT (!gpt query...)
-- [x] Music 
+- [ ] Group management (!warn, !ban, !kick, etc)
+- [ ] Chat GPT (!gpt query)
+- [x] Music (!song query)
 - [ ] Year progress
 - [ ] Animal module (!cat, !dog, !otter, etc)
 - [ ] Meme (Using reddit [meme api](https://github.com/D3vd/Meme_Api))
