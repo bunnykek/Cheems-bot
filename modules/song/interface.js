@@ -4,17 +4,17 @@ const ffmpeg = require("fluent-ffmpeg");
 const ytdl = require("ytdl-core");
 const yts = require("yt-search");
 
-class Song {
+class Module {
 	/** @type {string[]} */
 	command = ['!song'];
 
 	/** @type {string[]} */
-	description = ['Pass the song name along with the command to download the audio of the song.'];
+	description = ['Pass the song name or youtube link of the song along with the command to download the audio of the song.'];
 
 	/**
 	 * @param {Client} client
 	 * @param {Message} msg
-	*/
+	 */
 
 	async operate(client, msg) {
 		let songName;
@@ -22,6 +22,10 @@ class Song {
 		if (regxmatch) {
 			songName = regxmatch[1];
 		} else {
+			msg.reply(
+				"Provide song's name or youtube link of song with command.",
+				msg.from
+			);
 			return;
 		}
 
@@ -112,4 +116,4 @@ class Song {
 	}
 }
 
-module.exports = Song
+module.exports = Module
