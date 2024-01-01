@@ -31,7 +31,7 @@ It will take few minutes depending on your internet connection.
 - [ ] Group management (!warn, !ban, !kick, etc)
 - [ ] Chat GPT (!gpt query)
 - [x] Music (!song query) [already assigned]
-- [ ] Year progress
+- [ ] Year progress [already assigned]
 - [ ] Animal module (!cat, !dog, !otter, etc)
 - [ ] Meme (Using reddit [meme api](https://github.com/D3vd/Meme_Api))
 - [ ] youtube-dl (!ytdl url) [already assigned]
