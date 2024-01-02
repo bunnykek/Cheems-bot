@@ -12,7 +12,7 @@ class Module {
 
     /** @type {string[]} */
     description = [
-        'Reply or send media with _!sticker_ to get it back as a sticker',
+        'Reply or send media with _!sticker_ to get it back as a sticker also supports Telegram sticker packs.',
         'Reply to a sticker to steal it.',
         'Converts the sticker to image.',
         'Get back the media as 1:1 cropped sticker.'
