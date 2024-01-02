@@ -4,7 +4,13 @@ const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 require('dotenv').config()
 
-const TG_BOT_API = process.env.TG_BOT_API;
+const TG_BOT_API = process.env.TG_BOT_API || null;
+
+if (!fs.existsSync('./modules/sticker/tmp/')) {
+    // If it doesn't exist, create it
+    fs.mkdirSync('./modules/sticker/tmp/');
+    console.log(`Folder './modules/sticker/tmp/' created.`);
+}
 
 class Module {
     /** @type {string[]} */
@@ -47,8 +53,8 @@ class Module {
         if (msg_string.includes("!square")) {
             let randno = (Math.random() * 100 + 100).toString();
             let filextension = media.mimetype.split('/')[1];
-            let filepath = "./modules/sticker/" + randno + '.' + filextension;
-            let squarefilepath = "./modules/sticker/" + 'square_' + randno + '.' + filextension;
+            let filepath = "./modules/sticker/tmp/" + randno + '.' + filextension;
+            let squarefilepath = "./modules/sticker/tmp/" + 'square_' + randno + '.' + filextension;
             fs.writeFile(filepath, media.data, "base64",
                 function (err) {
                     if (err) {
@@ -94,16 +100,23 @@ class Module {
         if (matches) {
             let url = matches[0];
             if (url.includes('https://t.me/addstickers') || url.includes('https://telegram.me/addstickers')) {
+
+                //check if bot_token is available
+                if (!TG_BOT_API) {
+                    msg.reply("TG_BOT_API ENV variable is not set.", msg.from)
+                    return;
+                }
+
                 let urlsplit = url.split("/");
                 let packname = urlsplit[urlsplit.length - 1];
                 console.log("packname:", packname);
                 let response = await got(`https://api.telegram.org/bot${TG_BOT_API}/getStickerSet?name=${packname}`);
                 let packjson = JSON.parse(response.body);
-                if(packjson['result']['is_animated']){
+                if (packjson['result']['is_animated']) {
                     msg.reply("Animated sticker packs are not supported. Use only static or video sticker-packs for telegram.", msg.from)
                     return;
                 }
-                for(const sticker of packjson['result']['stickers']){
+                for (const sticker of packjson['result']['stickers']) {
                     let stickeres = await got(`https://api.telegram.org/bot${TG_BOT_API}/getFile?file_id=${sticker['file_id']}`);
                     let stickerjson = JSON.parse(stickeres.body);
                     let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`);
