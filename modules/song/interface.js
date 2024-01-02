@@ -80,27 +80,27 @@ class Module {
 					.audioBitrate(320)
 					.withNoVideo()
 					.toFormat("mp3")
-					.saveToFile(`tmp/${msg.id.id}.mp3`)
+					.saveToFile(`./modules/tmp/${msg.id.id}.mp3`)
 					.on("end", async () => {
-						console.log(`downloaded tmp/${msg.id.id}.mp3`);
+						console.log(`downloaded ./modules/tmp/${msg.id.id}.mp3`);
 
 						let uploading_msg = await client.sendMessage(
 							msg.from,
 							`Uploading your song (for request ${songName})...`,
 						);
 
-						const media = MessageMedia.fromFilePath(`tmp/${msg.id.id}.mp3`);
+						const media = MessageMedia.fromFilePath(`./modules/tmp/${msg.id.id}.mp3`);
 						await msg.reply(
 							media,
 							msg.from
 						).catch((err) => {console.log("song reply err: ", err); throw err;});
 
-						fs.unlink(`tmp/${msg.id.id}.mp3`, (err) => {
+						fs.unlink(`./modules/tmp/${msg.id.id}.mp3`, (err) => {
 							if (err)  {
 								console.log("fs.unlink err: ", err);
 								throw err;
 							}
-							console.log(`tmp/${msg.id.id}.mp3 was deleted`);
+							console.log(`./modules/tmp/${msg.id.id}.mp3 was deleted`);
 						});
 						uploading_msg.delete(true);
 					});
