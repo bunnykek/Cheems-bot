@@ -10,8 +10,6 @@ const modules = fs.readdirSync(directoryPath)
 const moduleObjects = [];
 
 for (const module of modules) {
-  if (module === 'tmp')
-	continue;
   console.log(module);
   moduleClass = require(`${directoryPath}/${module}/interface.js`);
   moduleObjects.push(new moduleClass());  // Assuming no constructor arguments

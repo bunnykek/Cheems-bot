@@ -72,35 +72,35 @@ class Module {
 
 				let stream = ytdl.downloadFromInfo(info, { format: bestFormat });
 
-				if (!fs.existsSync('./modules/tmp')){
-					fs.mkdirSync('./modules/tmp');
+				if (!fs.existsSync('./modules/song/tmp')){
+					fs.mkdirSync('./modules/song/tmp');
 				}
 
 				ffmpeg(stream)
 					.audioBitrate(320)
 					.withNoVideo()
 					.toFormat("mp3")
-					.saveToFile(`./modules/tmp/${msg.id.id}.mp3`)
+					.saveToFile(`./modules/song/tmp/${msg.id.id}.mp3`)
 					.on("end", async () => {
-						console.log(`downloaded ./modules/tmp/${msg.id.id}.mp3`);
+						console.log(`downloaded ./modules/song/tmp/${msg.id.id}.mp3`);
 
 						let uploading_msg = await client.sendMessage(
 							msg.from,
 							`Uploading your song (for request ${songName})...`,
 						);
 
-						const media = MessageMedia.fromFilePath(`./modules/tmp/${msg.id.id}.mp3`);
+						const media = MessageMedia.fromFilePath(`./modules/song/tmp/${msg.id.id}.mp3`);
 						await msg.reply(
 							media,
 							msg.from
 						).catch((err) => {console.log("song reply err: ", err); throw err;});
 
-						fs.unlink(`./modules/tmp/${msg.id.id}.mp3`, (err) => {
+						fs.unlink(`./modules/song/tmp/${msg.id.id}.mp3`, (err) => {
 							if (err)  {
 								console.log("fs.unlink err: ", err);
 								throw err;
 							}
-							console.log(`./modules/tmp/${msg.id.id}.mp3 was deleted`);
+							console.log(`./modules/song/tmp/${msg.id.id}.mp3 was deleted`);
 						});
 						uploading_msg.delete(true);
 					});
