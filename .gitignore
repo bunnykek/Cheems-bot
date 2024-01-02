@@ -1,7 +1,7 @@
 env
 .wwebjs_auth/
 .wwebjs_cache/
-modules/tmp
+modules/song/tmp
 Session.vim
 
 # Logs
