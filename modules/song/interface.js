@@ -72,8 +72,8 @@ class Module {
 
 				let stream = ytdl.downloadFromInfo(info, { format: bestFormat });
 
-				if (!fs.existsSync('./tmp')){
-					fs.mkdirSync('./tmp');
+				if (!fs.existsSync('./modules/tmp')){
+					fs.mkdirSync('./modules/tmp');
 				}
 
 				ffmpeg(stream)
