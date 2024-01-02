@@ -32,6 +32,6 @@ It will take few minutes depending on your internet connection.
 - [ ] Chat GPT (!gpt query)
 - [x] Music (!song query) [already assigned]
 - [ ] Year progress 
-- [ ] Animal module (!cat, !dog, !otter, etc) [already assigned]
+- [x] Animal module (!cat, !dog, !otter, etc) [already assigned]
 - [x] Meme (Using reddit [meme api](https://github.com/D3vd/Meme_Api))
 - [ ] youtube-dl (!ytdl url) [already assigned]
