@@ -51,7 +51,7 @@ class Module {
 					throw err;
 				}
 			} else {
-				var song = await yts(songName);
+				var song = await yts(`${songName} Song`);
 				song = song.all;
 				if (song.length < 1) {
 					throw "Song not found";
@@ -79,7 +79,7 @@ class Module {
 				ffmpeg(stream)
 					.audioBitrate(320)
 					.withNoVideo()
-					.toFormat("mp3")
+					.toFormat("ipod")
 					.saveToFile(`./modules/song/tmp/${msg.id.id}.mp3`)
 					.on("end", async () => {
 						console.log(`downloaded ./modules/song/tmp/${msg.id.id}.mp3`);
@@ -108,6 +108,7 @@ class Module {
 				throw err;
 			}
 		} catch (err) {
+			console.error('!song err: ', err);
 			msg.reply(
 				"Sorry couldn't find your song :(",
 				msg.from
