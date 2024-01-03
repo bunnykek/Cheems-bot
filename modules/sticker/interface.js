@@ -68,7 +68,7 @@ class Module {
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             if (fs.existsSync(filepath)) {
-                execSync(`ffmpeg -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" -y -movflags "frag_keyframe+empty_moov" ${squarefilepath}`)
+                execSync(`ffmpeg -to 00:00:04 -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" -y -movflags "frag_keyframe+empty_moov" ${squarefilepath}`)
 
                 await new Promise(resolve => setTimeout(resolve, 4123));
     
