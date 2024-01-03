@@ -1,6 +1,8 @@
 const { MessageMedia, Message, Client } = require('whatsapp-web.js');
 const got = require('got')
-const ffmpeg = require('fluent-ffmpeg');
+const execSync = require('child_process').execSync;
+
+
 const fs = require('fs');
 require('dotenv').config()
 
@@ -66,21 +68,16 @@ class Module {
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             if (fs.existsSync(filepath)) {
-                // execSync(`ffmpeg -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" ${squarefilepath}`)
-                ffmpeg()
-                    .input(filepath)
-                    .videoFilter('crop=w=min(iw\\,ih):h=min(iw\\,ih)')
-                    .outputOptions('-movflags frag_keyframe+empty_moov')
-                    .output(squarefilepath)
-                    .run();
+                execSync(`ffmpeg -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" -y -movflags "frag_keyframe+empty_moov" ${squarefilepath}`)
+
+                await new Promise(resolve => setTimeout(resolve, 4123));
+    
+                media = MessageMedia.fromFilePath(squarefilepath);
+                await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
+                fs.rmSync(filepath)
+                fs.rmSync(squarefilepath)
             }
 
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            media = MessageMedia.fromFilePath(squarefilepath);
-            await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
-            fs.rmSync(filepath)
-            fs.rmSync(squarefilepath)
         }
 
         if (msg_string.includes("!image")) {

@@ -3,6 +3,7 @@ env
 .wwebjs_cache/
 modules/song/tmp
 modules/sticker/tmp/
+modules/jiosaavn
 Session.vim
 
 # Logs

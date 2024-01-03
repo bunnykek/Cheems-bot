@@ -63,7 +63,7 @@ client.on('message', msg => {
     obj.command.forEach(async cmd => {
       if(msg.body.includes(cmd)){
         try {
-          await obj.operate(client, msg);
+          obj.operate(client, msg);
         } catch (error) {
           console.log(error);
         }
