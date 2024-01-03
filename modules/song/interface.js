@@ -65,9 +65,16 @@ class Module {
 				let bestFormat = null;
 				for (let i = 0; i < info.formats.length; i += 1) {
 					let format = info.formats[i];
-					if (bestFormat == null || format.audioBitrate > bestFormat.audioBitrate) {
+					if (format.hasAudio === false) {
+						continue;
+					}
+					if (bestFormat === null || format.audioBitrate > bestFormat.audioBitrate) {
 						bestFormat = format;
 					}
+				}
+
+				if (bestFormat === null) {
+					throw `Couldn't find audio format for song ${songName}`;
 				}
 
 				let stream = ytdl.downloadFromInfo(info, { format: bestFormat });
@@ -90,10 +97,17 @@ class Module {
 						);
 
 						const media = MessageMedia.fromFilePath(`./modules/song/tmp/${msg.id.id}.mp3`);
-						await msg.reply(
-							media,
-							msg.from
-						).catch((err) => {console.log("song reply err: ", err); throw err;});
+
+						if (msg.hasQuotedMsg) {
+							let quoted = await msg.getQuotedMessage();
+							await quoted.reply(
+								media,
+							).catch((err) => {console.log("song reply err: ", err); throw err;});
+						} else {
+							await msg.reply(
+								media,
+							).catch((err) => {console.log("song reply err: ", err); throw err;});
+						}
 
 						fs.unlink(`./modules/song/tmp/${msg.id.id}.mp3`, (err) => {
 							if (err)  {
