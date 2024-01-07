@@ -1,6 +1,10 @@
 const { MessageMedia, Message, Client } = require('whatsapp-web.js');
 const got = require('got')
-const execSync = require('child_process').execSync;
+const ffmpeg = require('fluent-ffmpeg');
+const stream = require('stream')
+const { promisify } = require('util');
+const exec = promisify(require('child_process').exec)
+
 
 
 const fs = require('fs');
@@ -29,7 +33,24 @@ class Module {
     /** 
      * @param {string} msg_string
      * @param {Message} msg 
-     */
+    */
+   
+    // videocropsync(filepath, squarefilepath){
+    //     return new Promise((resolve,reject)=>{
+    //         ffmpeg(filepath)
+    //         .duration(5)
+    //         .videoFilter(`crop=w='min(iw,ih)':h='min(iw,ih)'`)
+    //         .outputOptions('-movflags frag_keyframe+empty_moov')
+    //         .save(squarefilepath)
+    //         .on('end', ()=>{
+    //             console.log(`Video rendered`)
+    //             return resolve()
+    //         })
+    //         .on('err',(err)=>{
+    //             return reject(err)
+    //         })
+    //     })
+    // }
 
     async fun(msg_string, msg) {
         //regex to extract the stickername and stickerauthor from message text
@@ -57,6 +78,8 @@ class Module {
             let filextension = media.mimetype.split('/')[1];
             let filepath = "./modules/sticker/tmp/" + randno + '.' + filextension;
             let squarefilepath = "./modules/sticker/tmp/" + 'square_' + randno + '.' + filextension;
+            console.log("filesize:", media.filesize);
+            
             fs.writeFile(filepath, media.data, "base64",
                 function (err) {
                     if (err) {
@@ -64,19 +87,54 @@ class Module {
                     }
                 }
             );
-
-            await new Promise(resolve => setTimeout(resolve, 2000));
-
-            if (fs.existsSync(filepath)) {
-                execSync(`ffmpeg -to 00:00:04 -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" -y -movflags "frag_keyframe+empty_moov" ${squarefilepath}`)
-
-                await new Promise(resolve => setTimeout(resolve, 4123));
-    
+            
+            try{
+                await exec(`ffmpeg -to 00:00:05 -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" -movflags "frag_keyframe+empty_moov" -y ${squarefilepath}`);
                 media = MessageMedia.fromFilePath(squarefilepath);
                 await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
                 fs.rmSync(filepath)
                 fs.rmSync(squarefilepath)
             }
+            catch(err){
+                console.log(err);
+                if (fs.existsSync(filepath)) {
+                    fs.rmSync(filepath)
+                }
+                if (fs.existsSync(squarefilepath)) {
+                    fs.rmSync(squarefilepath)
+                }
+                await msg.reply("Corrupted file.", msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
+            }
+            // await (function (){
+            //     return new Promise((resolve,reject)=>{
+            //         ffmpeg({
+            //             source: stream.Readable.from([new Buffer.from(media.data, 'base64')], { objectMode: false })
+            //         })
+            //         .duration(5)
+            //         .videoFilter(`crop=w='min(iw,ih)':h='min(iw,ih)'`)
+            //         .outputOptions(['-movflags frag_keyframe+empty_moov'])
+            //         .save(squarefilepath)
+            //         .on('end', ()=>{
+            //             console.log(`Video rendered`)
+            //             return resolve()
+            //         })
+            //         .on('err',(err)=>{
+            //             return reject(err)
+            //         })
+            //     })
+            // })()
+
+    
+
+            // await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // if (fs.existsSync(filepath)) {
+            //     await this.videocropsync(filepath, squarefilepath);
+            //     media = MessageMedia.fromFilePath(squarefilepath);
+            //     await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
+            //     fs.rmSync(filepath)
+            //     fs.rmSync(squarefilepath)
+            // }
 
         }
 
@@ -84,6 +142,7 @@ class Module {
             await msg.reply(media, msg.from)
         }
     }
+
 
     /** 
      * @param {Client} client
@@ -116,7 +175,7 @@ class Module {
                 for (const sticker of packjson['result']['stickers']) {
                     let stickeres = await got(`https://api.telegram.org/bot${TG_BOT_API}/getFile?file_id=${sticker['file_id']}`);
                     let stickerjson = JSON.parse(stickeres.body);
-                    let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`);
+                    let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`, {unsafeMime: true});
                     client.sendMessage(msg.from, media, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' });
                     await new Promise(resolve => setTimeout(resolve, 1234));
                 }
