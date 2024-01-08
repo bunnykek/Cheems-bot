@@ -46,7 +46,11 @@ client.on('auth_failure', () => {
 
 client.on('message', msg => {
   if (msg.body == '!ping') {
-    msg.reply('pong');
+    msg.reply('pong!');
+  }
+
+  if(msg.body == '!alive'){
+    msg.reply('beep boop!');
   }
 
   if(msg.body == '!help'){
