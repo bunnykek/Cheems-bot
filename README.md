@@ -33,5 +33,5 @@ It will take few minutes depending on your internet connection.
 - [x] Music (!song query)
 - [ ] Year progress 
 - [x] Animal module (!cat, !dog, !otter, etc)
-- [x] Meme (Using reddit [meme api](https://github.com/D3vd/Meme_Api))
+- [x] Random (!rmeme, !ranime, !rsong)
 - [ ] youtube-dl (!ytdl url) [already assigned]
