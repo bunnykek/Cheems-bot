@@ -1,6 +1,7 @@
 const { Message, MessageMedia } = require('whatsapp-web.js');
 const fs = require("fs");
-const ffmpeg = require("fluent-ffmpeg");
+const { promisify } = require('util');
+const exec = promisify(require('child_process').exec)
 const ytdl = require("ytdl-core");
 const yts = require("yt-search");
 
@@ -17,6 +18,13 @@ class Module {
 	 */
 
 	async operate(client, msg) {
+		var replied_msg = msg.reply("Processing your song request...", msg.from);
+		
+		var quoted = msg;
+		if(msg.hasQuotedMsg){
+			quoted = await msg.getQuotedMessage();
+		}
+
 		let songName;
 		const regxmatch = msg.body.match(/!song (.+)/);
 		if (regxmatch) {
@@ -35,21 +43,12 @@ class Module {
 			let Id = " ";
 			if (args[0].includes("youtu")) {
 				Id = args[0];
-				try {
-					if (args[0].includes("watch?v=")) {
-						var songId = args[0].split("watch?v=")[1];
-					} else {
-						var songId = args[0].split("/")[3];
-					}
-					const video = await yts({ videoId: songId })
-						.catch((err) => {
-							console.log("yt-search err: ", err);
-							throw err;
-						});
-				} catch (err) {
-					console.log("err: ", err);
-					throw err;
+				if (args[0].includes("watch?v=")) {
+					Id = args[0].split("watch?v=")[1].split('?')[0];
+				} else {
+					Id = args[0].split("/")[3].split('?')[0];
 				}
+
 			} else {
 				var song = await yts(`${songName} Song`);
 				song = song.all;
@@ -58,77 +57,32 @@ class Module {
 				}
 				Id = song[0].url;
 			}
-			try {
-				// select best audio format
-				let info = await ytdl.getInfo(Id);
-				let audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-				let bestFormat = null;
-				for (let i = 0; i < info.formats.length; i += 1) {
-					let format = info.formats[i];
-					if (format.hasAudio === false) {
-						continue;
-					}
-					if (bestFormat === null || format.audioBitrate > bestFormat.audioBitrate) {
-						bestFormat = format;
-					}
-				}
+			// select best audio format
+			let info = await ytdl.getInfo(Id);
 
-				if (bestFormat === null) {
-					throw `Couldn't find audio format for song ${songName}`;
-				}
-
-				let stream = ytdl.downloadFromInfo(info, { format: bestFormat });
-
-				if (!fs.existsSync('./modules/song/tmp')){
-					fs.mkdirSync('./modules/song/tmp');
-				}
-
-				ffmpeg(stream)
-					.audioBitrate(320)
-					.withNoVideo()
-					.toFormat("ipod")
-					.saveToFile(`./modules/song/tmp/${msg.id.id}.mp3`)
-					.on("end", async () => {
-						console.log(`downloaded ./modules/song/tmp/${msg.id.id}.mp3`);
-
-						let uploading_msg = await client.sendMessage(
-							msg.from,
-							`Uploading your song (for request ${songName})...`,
-						);
-
-						const media = MessageMedia.fromFilePath(`./modules/song/tmp/${msg.id.id}.mp3`);
-
-						if (msg.hasQuotedMsg) {
-							let quoted = await msg.getQuotedMessage();
-							await quoted.reply(
-								media,
-							).catch((err) => {console.log("song reply err: ", err); throw err;});
-						} else {
-							await msg.reply(
-								media,
-							).catch((err) => {console.log("song reply err: ", err); throw err;});
-						}
-
-						fs.unlink(`./modules/song/tmp/${msg.id.id}.mp3`, (err) => {
-							if (err)  {
-								console.log("fs.unlink err: ", err);
-								throw err;
-							}
-							console.log(`./modules/song/tmp/${msg.id.id}.mp3 was deleted`);
-						});
-						uploading_msg.delete(true);
-					});
-			} catch (err) {
-				throw err;
+			if (!fs.existsSync('./modules/song/tmp')) {
+				fs.mkdirSync('./modules/song/tmp');
 			}
-		} catch (err) {
-			console.error('!song err: ', err);
-			msg.reply(
-				"Sorry couldn't find your song :(",
-				msg.from
-			);
+
+			// (await replied_msg).edit("Downloading...")
+			var file_path = `./modules/song/tmp/${info.videoDetails.title}.aac`;
+			const outputStream = fs.createWriteStream(file_path);
+			ytdl.downloadFromInfo(info, {quality:'140'}).pipe(outputStream);
+			outputStream.on('finish', async () => {
+				console.log(`Finished downloading: ${file_path}`);
+				// await exec(`ffmpeg -i ${file_path} -y ${final_path}`);
+				(await replied_msg).edit("Uploading...")
+				let media = MessageMedia.fromFilePath(file_path)
+				await quoted.reply(media, quoted.from, {sendMediaAsDocument: true})
+				
+				if (fs.existsSync(file_path)) fs.rmSync(file_path)
+				// if (fs.existsSync(final_path)) fs.rmSync(final_path)
+			});
+		}
+		catch (error) {
+			console.log("Song module error:", error);
+			await msg.reply("Unable to process your request.", msg.from);
 		}
 	}
 }
-
 module.exports = Module

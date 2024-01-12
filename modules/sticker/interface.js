@@ -1,7 +1,5 @@
 const { MessageMedia, Message, Client } = require('whatsapp-web.js');
 const got = require('got')
-const ffmpeg = require('fluent-ffmpeg');
-const stream = require('stream')
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec)
 

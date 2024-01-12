@@ -1,10 +1,10 @@
 const qrcode = require('qrcode-terminal');
-const { Client, LocalAuth} = require('whatsapp-web.js');
+const { Client, LocalAuth } = require('whatsapp-web.js');
 const fs = require('fs');
 
 
 // importing modules from a directory
-const directoryPath = './modules';  
+const directoryPath = './modules';
 
 const modules = fs.readdirSync(directoryPath)
 const moduleObjects = [];
@@ -17,11 +17,11 @@ for (const module of modules) {
 
 
 const client = new Client({
-    authStrategy: new LocalAuth(),
-    puppeteer: {
-      executablePath: '/usr/bin/google-chrome-stable',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    },
+  authStrategy: new LocalAuth(),
+  puppeteer: {
+    executablePath: '/usr/bin/google-chrome-stable',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  },
 });
 
 client.on('qr', (qr) => {
@@ -49,28 +49,27 @@ client.on('message', msg => {
     msg.reply('pong!');
   }
 
-  if(msg.body == '!alive'){
+  if (msg.body == '!alive') {
     msg.reply('beep boop!');
   }
 
-  if(msg.body == '!help'){
+  if (msg.body == '!help') {
     let helpstring = `*Cheems bot*\n\n`
     moduleObjects.forEach(obj => {
-      for(i=0; i<obj.command.length; i++){
-        helpstring+=`*${obj.command[i]}:* ${obj.description[i]}\n\n`
+      for (i = 0; i < obj.command.length; i++) {
+        helpstring += `*${obj.command[i]}:* ${obj.description[i]}\n\n`
       }
     })
     msg.reply(helpstring);
   }
 
   moduleObjects.forEach(obj => {
-    obj.command.forEach(async cmd => {
-      if(msg.body.includes(cmd)){
-        try {
-          obj.operate(client, msg);
-        } catch (error) {
-          console.log(error);
-        }
+    obj.command.forEach(cmd => {
+      if (msg.body.includes(cmd)) {
+        obj.operate(client, msg)
+          .catch(error => {
+            console.log(error);
+          })
       }
     })
   })
