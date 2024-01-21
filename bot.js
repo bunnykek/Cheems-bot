@@ -63,16 +63,30 @@ client.on('message', msg => {
     msg.reply(helpstring);
   }
 
-  moduleObjects.forEach(obj => {
-    obj.command.forEach(cmd => {
+  for (const obj of moduleObjects) {
+    for (const cmd of obj.command) {
       if (msg.body.includes(cmd)) {
         obj.operate(client, msg)
           .catch(error => {
             console.log(error);
+            msg.reply("_Could not process your request :/_")
           })
+        return;
       }
-    })
-  })
+    }
+  }
+  // moduleObjects.forEach(obj => {
+  //   obj.command.forEach(cmd => {
+  //     if (msg.body.includes(cmd)) {
+  //       obj.operate(client, msg)
+  //         .catch(async error => {
+  //           console.log(error);
+  //           await msg.reply("_Could not process your request :/_")
+  //         })
+  //       return;
+  //     }
+  //   })
+  // })
 });
 
 client.initialize();

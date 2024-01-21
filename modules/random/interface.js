@@ -6,7 +6,7 @@ class Module {
 	command = ['!rmeme', '!rsong', '!ranime'];
 
 	/** @type {string[]} */
-	description = ['Random meme.', 'Random music.', 'Random anime character.']
+	description = ['Random meme.', 'Random music.\n_!rsong [Genre]_', 'Random anime character.']
 
 	/**
 	 * @param {Client} client
@@ -27,7 +27,15 @@ class Module {
 			}
 
 			if(msg.body.includes('!rsong')){
-				let response = await got('https://europe-west1-randommusicgenerator-34646.cloudfunctions.net/app/getRandomTrack?genre=pop&market=random&decade=2010s&tag_new=false&exclude_singles=false')
+
+				let genre = "pop";
+
+				const regxmatch = msg.body.match(/!rsong (.+)/);
+				if (regxmatch) {
+					genre = regxmatch[1].replace(' ', '_');
+				}
+
+				let response = await got(`https://europe-west1-randommusicgenerator-34646.cloudfunctions.net/app/getRandomTrack?genre=${genre}`)
 				let jsondata = JSON.parse(response.body);
 				let trackname = jsondata['name'];
 				let imageurl = jsondata['tracks'][0]['album']['images'][0]['url'];
