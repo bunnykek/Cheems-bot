@@ -34,4 +34,6 @@ It will take few minutes depending on your internet connection.
 - [ ] Year progress 
 - [x] Animal module (!cat, !dog, !otter, etc)
 - [x] Random (!rmeme, !ranime, !rsong)
-- [ ] youtube-dl (!ytdl url) [already assigned]
+- [ ] youtube-dl (!ytdl url) 
+- [x] Urban dictionary (!ud query)
+- [x] Wikipedia (!wiki query, !wikipdf query)
