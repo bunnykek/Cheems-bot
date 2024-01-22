@@ -71,7 +71,7 @@ client.on('message', msg => {
             console.log(error);
             msg.reply("_Could not process your request :/_")
           })
-        return;
+        break;
       }
     }
   }
