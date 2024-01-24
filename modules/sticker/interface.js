@@ -32,23 +32,6 @@ class Module {
      * @param {string} msg_string
      * @param {Message} msg 
     */
-   
-    // videocropsync(filepath, squarefilepath){
-    //     return new Promise((resolve,reject)=>{
-    //         ffmpeg(filepath)
-    //         .duration(5)
-    //         .videoFilter(`crop=w='min(iw,ih)':h='min(iw,ih)'`)
-    //         .outputOptions('-movflags frag_keyframe+empty_moov')
-    //         .save(squarefilepath)
-    //         .on('end', ()=>{
-    //             console.log(`Video rendered`)
-    //             return resolve()
-    //         })
-    //         .on('err',(err)=>{
-    //             return reject(err)
-    //         })
-    //     })
-    // }
 
     async fun(msg_string, msg) {
         //regex to extract the stickername and stickerauthor from message text
@@ -103,36 +86,6 @@ class Module {
                 }
                 await msg.reply("Corrupted file.", msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
             }
-            // await (function (){
-            //     return new Promise((resolve,reject)=>{
-            //         ffmpeg({
-            //             source: stream.Readable.from([new Buffer.from(media.data, 'base64')], { objectMode: false })
-            //         })
-            //         .duration(5)
-            //         .videoFilter(`crop=w='min(iw,ih)':h='min(iw,ih)'`)
-            //         .outputOptions(['-movflags frag_keyframe+empty_moov'])
-            //         .save(squarefilepath)
-            //         .on('end', ()=>{
-            //             console.log(`Video rendered`)
-            //             return resolve()
-            //         })
-            //         .on('err',(err)=>{
-            //             return reject(err)
-            //         })
-            //     })
-            // })()
-
-    
-
-            // await new Promise(resolve => setTimeout(resolve, 2000));
-
-            // if (fs.existsSync(filepath)) {
-            //     await this.videocropsync(filepath, squarefilepath);
-            //     media = MessageMedia.fromFilePath(squarefilepath);
-            //     await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
-            //     fs.rmSync(filepath)
-            //     fs.rmSync(squarefilepath)
-            // }
 
         }
 
@@ -173,9 +126,42 @@ class Module {
                 for (const sticker of packjson['result']['stickers']) {
                     let stickeres = await got(`https://api.telegram.org/bot${TG_BOT_API}/getFile?file_id=${sticker['file_id']}`);
                     let stickerjson = JSON.parse(stickeres.body);
-                    let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`, {unsafeMime: true});
-                    client.sendMessage(msg.from, media, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' });
-                    await new Promise(resolve => setTimeout(resolve, 1234));
+                    console.log(stickerjson['result']['file_path']);
+
+                    if(stickerjson['result']['file_path'].includes('webp')){
+                        console.log("webp sticker");
+                        let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`, {unsafeMime: true});
+                        await client.sendMessage(msg.from, media, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' });
+                        await new Promise(resolve => setTimeout(resolve, 1234));
+                    }
+                    
+                    else{
+                        console.log("Not .webp");
+                        let filename = stickerjson['result']['file_path'].split('/')[1];
+                        let filepath = "./modules/sticker/tmp/" + filename;
+                        let newpath = "./modules/sticker/tmp/" + filename + '.webp';
+                        const data = await got(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`, { responseType: 'buffer' });
+                        // Save the response body to a file
+                        fs.writeFileSync(filepath, data.body);
+                        // await exec(`ffmpeg -i "${filepath}" -c libwebp -y "${newpath}"`);
+                        await exec(`ffmpeg -c:v libvpx-vp9 -i "${filepath}" -y "${newpath}"`);
+                        // await exec(`ffmpeg -i "${filepath}" -c libwebp -y "${newpath}"`);
+                        let media = MessageMedia.fromFilePath(newpath);
+                        console.log("Sticker size, ", media.mimetype, media.filesize);
+                        try{
+                            await client.sendMessage(msg.from, media, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' });
+                        }
+                        catch(err){
+                            console.log("Failed sending the sticker,", err);
+                        }
+                        
+                        if (fs.existsSync(filepath)) {
+                            fs.rmSync(filepath)
+                        }
+                        if (fs.existsSync(newpath)) {
+                            fs.rmSync(newpath)
+                        }
+                    }
                 }
             }
             else {
