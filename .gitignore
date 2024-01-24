@@ -4,6 +4,7 @@ env
 modules/song/tmp
 modules/sticker/tmp/
 modules/ytdl/tmp/
+modules/ytdl/cookies.txt
 modules/jiosaavn
 Session.vim
 

@@ -1,9 +1,8 @@
 const { Message, MessageMedia } = require('whatsapp-web.js');
 const fs = require("fs");
-const { promisify } = require('util');
-const exec = promisify(require('child_process').exec)
 const ytdl = require("ytdl-core");
 const yts = require("yt-search");
+var sanitize = require("sanitize-filename");
 
 class Module {
 	/** @type {string[]} */
@@ -65,7 +64,7 @@ class Module {
 			}
 
 			// (await replied_msg).edit("Downloading...")
-			var file_path = `./modules/song/tmp/${info.videoDetails.title}.aac`;
+			var file_path = `./modules/song/tmp/${sanitize(info.videoDetails.title)}.aac`;
 			const outputStream = fs.createWriteStream(file_path);
 			ytdl.downloadFromInfo(info, {quality:'140'}).pipe(outputStream);
 			outputStream.on('finish', async () => {

@@ -32,12 +32,7 @@ class Module {
             if (matches) {
                 let url = matches[0];
                 var file_path = `./modules/ytdl/tmp/%(title)s.mp4`;
-                if(url.includes("instagram")){
-                    var output = await exec(`./modules/ytdl/yt-dlp "${url}" -S res,ext:mp4:m4a --recode mp4 -o "${file_path}"`);
-                }
-                else{
-                    var output = await exec(`./modules/ytdl/yt-dlp -f "bestvideo[filesize<50M]+bestaudio" "${url}" -S res,ext:mp4:m4a --recode mp4 -o "${file_path}"`);
-                }
+                let output = await exec(`./modules/ytdl/yt-dlp -f "best[ext=mp4]" "${url}" --cookies "modules/ytdl/cookies.txt" -o "${file_path}"`);
                 const regexmatch = output.stdout.match(/(.\/.+\.mp4)/g);
                 if(regexmatch){
                     file_path = regexmatch[regexmatch.length-1];
@@ -48,7 +43,7 @@ class Module {
                 console.log(file_path);
                 // console.log(output);
                 let media =  MessageMedia.fromFilePath(file_path);
-                await msg.reply(media, msg.from, {sendMediaAsDocument: true});
+                await msg.reply(media, msg.from, {sendMediaAsDocument: true, media: media});
                 if (fs.existsSync(file_path)) fs.rmSync(file_path)
             }
             else{
