@@ -1,4 +1,4 @@
-const { Message, MessageMedia } = require('whatsapp-web.js');
+const { Message, MessageMedia, Client } = require('whatsapp-web.js');
 const got = require('got');
 
 class Module {
@@ -14,19 +14,19 @@ class Module {
 	 */
 
 	async operate(client, msg) {
-		
+
 		let media;
 		let quote = msg;
-		if(msg.hasQuotedMsg){
+		if (msg.hasQuotedMsg) {
 			quote = await msg.getQuotedMessage();
 		}
 		try {
-			if(msg.body.includes('!rmeme')){
-				media = await MessageMedia.fromUrl('https://img.randme.me/', {unsafeMime: true});
+			if (msg.body.includes('!rmeme')) {
+				media = await MessageMedia.fromUrl('https://img.randme.me/', { unsafeMime: true });
 				await quote.reply(media, quote.from);
 			}
 
-			if(msg.body.includes('!rsong')){
+			if (msg.body.includes('!rsong')) {
 
 				let genre = "pop";
 
@@ -42,17 +42,26 @@ class Module {
 				let spotifyurl = jsondata['link'];
 				// let releasedate = jsondata['release_date'];
 				let artist = jsondata['artists'][0]['name'];
-				media = await MessageMedia.fromUrl(imageurl, {unsafeMime: true});
+				let image = await MessageMedia.fromUrl(imageurl, { unsafeMime: true });
 				let message = `*${trackname}* by ${artist}\n${spotifyurl}`
-				await quote.reply(media, quote.from, {caption: message});
+
+
+				//Fetching the mp3-preview
+				response = await got(`https://open.spotify.com/embed/track/${jsondata['id']}`);
+				let mp3url = response.body.match(/(https:\/\/p\.scdn\.co\/mp3-preview\/[\d\w]+)/)[1];
+				console.log(mp3url);
+				let media = await MessageMedia.fromUrl(mp3url, { unsafeMime: true, filename: trackname + '.mp3' });
+				let sentmsg = await quote.reply(image, quote.from, { caption: message });
+				await client.sendMessage(quote.from, media, { sendAudioAsVoice: true });
+				console.log("Sent the random track and preview");
 			}
 
-			if(msg.body.includes('!ranime')){
-				let r1 = Math.floor(Math.random()*2817 + 1);
+			if (msg.body.includes('!ranime')) {
+				let r1 = Math.floor(Math.random() * 2817 + 1);
 				let response = await got(`https://api.jikan.moe/v4/top/characters?page=${r1}`)
 				// console.log(response.body);
 				let jsondata = JSON.parse(response.body);
-				let r2 = Math.floor(Math.random()* jsondata['data'].length);
+				let r2 = Math.floor(Math.random() * jsondata['data'].length);
 				let character = jsondata['data'][r2];
 				// console.log(r1, r2);
 				let character_name_en = character['name'];
@@ -60,15 +69,15 @@ class Module {
 				let character_image = character['images']['jpg']['image_url'];
 				let character_about = character['about'];
 				let character_link = character['url'];
-				
+
 				let caption = `*${character_name_en}* (${character_name_jp})\n\n${character_about}\n\n${character_link}`
-				media = await MessageMedia.fromUrl(character_image, {unsafeMime: true});
-				await quote.reply(media, quote.from, {caption: caption});
+				media = await MessageMedia.fromUrl(character_image, { unsafeMime: true });
+				await quote.reply(media, quote.from, { caption: caption });
 			}
 		} catch (err) {
 			console.error("api error:", err);
 			msg.reply(
-				"Sorry couldn't fulfill your request. Please try again.", 
+				"Sorry couldn't fulfill your request. Please try again.",
 				msg.from
 			);
 		}

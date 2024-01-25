@@ -43,7 +43,7 @@ class Module {
                 console.log(file_path);
                 // console.log(output);
                 let media =  MessageMedia.fromFilePath(file_path);
-                await msg.reply(media, msg.from, {sendMediaAsDocument: true, media: media});
+                msg.reply(media, msg.from, {sendMediaAsDocument: true});
                 if (fs.existsSync(file_path)) fs.rmSync(file_path)
             }
             else{
