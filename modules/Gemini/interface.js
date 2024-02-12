@@ -32,7 +32,7 @@ class Module {
     command = ['!gemini','__'];
 
     /** @type {string[]} */
-    description = ['Connect with Gemini AI']
+    description = ['Connect with Gemini AI, To start new conversation use Gemini or to conitnue the conversation use __']
 
     /**
      * @param {Client} client
