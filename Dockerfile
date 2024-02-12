@@ -1,4 +1,5 @@
 FROM node
+COPY . .
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 RUN apt-get update && echo "y" | apt-get install curl
 RUN apt-get install ffmpeg -y
