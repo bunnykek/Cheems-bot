@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.2.0",
     "dotenv": "^16.3.1",
     "fluent-ffmpeg": "^2.1.2",
     "got": "^11.8.6",
+    "nodemon": "^3.0.3",
     "qrcode-terminal": "^0.12.0",
     "random-animals-api": "^1.2.6",
     "sanitize-filename": "^1.6.3",
