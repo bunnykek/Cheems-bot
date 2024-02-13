@@ -29,10 +29,10 @@ const chat = model.startChat({
 
 class Module {
     /** @type {string[]} */
-    command = ['!gemini','__'];
+    command = ['!gemini','...'];
 
     /** @type {string[]} */
-    description = ['Connect with Gemini AI, To start new conversation use Gemini or to conitnue the conversation use __']
+    description = ['Connect with Gemini AI, To start new conversation use _!gemini query_', 'To continue the conversation use _... query_']
 
     /**
      * @param {Client} client
@@ -56,19 +56,20 @@ class Module {
             const prompt = query ;
 
             const result = await chat.sendMessage(prompt);
-            const response = await result.response;
+            const response = result.response;
             const text = response.text();
             await msg.reply(text,msg.from);           
         }
-        else if (msg.body.includes("__") ){
+        else if (msg.body.includes("...") ){
             const history = chat.getHistory();
             console.log(history);
             var query;
             
             //regular expression match with gemini keyword
-            const regxmatch = msg.body.match(/__(.+)/);   
+            const regxmatch = msg.body.match(/\.\.\. (.+)/);   
             if (regxmatch) {
                 query = regxmatch[1];
+                // console.log(query);
             }
             else{
                 console.log("No regex match!");

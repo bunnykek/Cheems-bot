@@ -6,7 +6,7 @@ class Module {
     command = ['!ud'];
 
     /** @type {string[]} */
-    description = ['Get the Urban Dictionary definition.\n_!ud [Word]_']
+    description = ['Get the Urban Dictionary definition.\n_!ud word_']
 
     /**
      * @param {Client} client

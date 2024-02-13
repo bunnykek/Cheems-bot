@@ -15,7 +15,7 @@ class Module {
     command = ['!ytdl'];
 
     /** @type {string[]} */
-    description = ['Downloads video from various services.\n_!ytdlp [URL]_'];
+    description = ['Downloads video from various services.\n_!ytdlp URL_'];
 
 
     /** 

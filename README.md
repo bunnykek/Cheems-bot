@@ -29,11 +29,12 @@ It will take few minutes depending on your internet connection.
 ### Modules To-do list:
 - [x] Sticker (!sticker, !steal, !image, !square)
 - [ ] Group management (!warn, !ban, !kick, etc)
-- [ ] Chat GPT (!gpt query)
+- [x] AI Chatbot (!gemini query)
 - [x] Music (!song query)
-- [ ] Year progress 
-- [x] Animal module (!cat, !dog, !otter, etc)
+- [x] Year progress 
+- [x] Animal module (!cat, !dog, !bunny, etc)
 - [x] Random (!rmeme, !ranime, !rsong)
-- [ ] youtube-dl (!ytdl url) 
+- [x] Meme (!meme [subreddit])
+- [x] youtube-dl (!ytdl url) 
 - [x] Urban dictionary (!ud query)
-- [x] Wikipedia (!wiki query, !wikipdf query)
+- [x] Wikipedia (!wiki [query], !wikipdf [query])

@@ -2,6 +2,9 @@ const qrcode = require('qrcode-terminal');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const fs = require('fs');
 
+const logo ='  /$$$$$$  /$$                                                          /$$                   /$$    \n /$$__  $$| $$                                                         | $$                  | $$    \n| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$/$$$$   /$$$$$$$       | $$$$$$$   /$$$$$$  /$$$$$$  \n| $$      | $$__  $$ /$$__  $$ /$$__  $$| $$_  $$_  $$ /$$_____//$$$$$$| $$__  $$ /$$__  $$|_  $$_/  \n| $$      | $$  \\ $$| $$$$$$$$| $$$$$$$$| $$ \\ $$ \\ $$|  $$$$$$|______/| $$  \\ $$| $$  \\ $$  | $$    \n| $$    $$| $$  | $$| $$_____/| $$_____/| $$ | $$ | $$ \\____  $$       | $$  | $$| $$  | $$  | $$ /$$\n|  $$$$$$/| $$  | $$|  $$$$$$$|  $$$$$$$| $$ | $$ | $$ /$$$$$$$/       | $$$$$$$/|  $$$$$$/  |  $$$$/\n \\______/ |__/  |__/ \\_______/ \\_______/|__/ |__/ |__/|_______/        |_______/  \\______/    \\___/  \n                                             A modular WhatsApp bot\n                                                 --by @bunnykek'
+console.log(logo);
+console.log("Loading the modules...");
 
 // importing modules from a directory
 const directoryPath = './modules';
@@ -75,18 +78,6 @@ client.on('message', msg => {
       }
     }
   }
-  // moduleObjects.forEach(obj => {
-  //   obj.command.forEach(cmd => {
-  //     if (msg.body.includes(cmd)) {
-  //       obj.operate(client, msg)
-  //         .catch(async error => {
-  //           console.log(error);
-  //           await msg.reply("_Could not process your request :/_")
-  //         })
-  //       return;
-  //     }
-  //   })
-  // })
 });
 
 client.initialize();
