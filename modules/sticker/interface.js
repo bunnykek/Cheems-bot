@@ -60,7 +60,7 @@ class Module {
             let filepath = "./modules/sticker/tmp/" + randno + '.' + filextension;
             let squarefilepath = "./modules/sticker/tmp/" + 'square_' + randno + '.' + filextension;
             console.log("filesize:", media.filesize);
-            
+
             fs.writeFile(filepath, media.data, "base64",
                 function (err) {
                     if (err) {
@@ -68,15 +68,15 @@ class Module {
                     }
                 }
             );
-            
-            try{
+
+            try {
                 await exec(`ffmpeg -to 00:00:05 -i ${filepath} -vf "crop=w='min(iw,ih)':h='min(iw,ih)'" -movflags "frag_keyframe+empty_moov" -y ${squarefilepath}`);
                 media = MessageMedia.fromFilePath(squarefilepath);
                 await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
                 fs.rmSync(filepath)
                 fs.rmSync(squarefilepath)
             }
-            catch(err){
+            catch (err) {
                 console.log(err);
                 if (fs.existsSync(filepath)) {
                     fs.rmSync(filepath)
@@ -102,11 +102,18 @@ class Module {
     async operate(client, msg) {
 
         //if the message has url
-        var urlRegex = /(https?|ftp):\/\/[^\s/$.?#].[^\s]*/i;
+        const urlRegex = /(https?|ftp):\/\/[^\s/$.?#].[^\s]*/i;
+        const tgRegex = /https:\/\/(t|telegram)\.me\/addstickers\/(\w+)( +(\d+))?/g
         var matches = msg.body.match(urlRegex);
         if (matches) {
-            let url = matches[0];
-            if (url.includes('https://t.me/addstickers') || url.includes('https://telegram.me/addstickers')) {
+
+            //TG sticker pack check
+            let tgMatch = msg.body.matchAll(tgRegex)
+            let matchList = [...tgMatch]
+            if (matchList[0]) {
+                let maxcount = 200
+                if (matchList[0][4])
+                    maxcount = parseInt(matchList[0][4])
 
                 //check if bot_token is available
                 if (!TG_BOT_API) {
@@ -114,8 +121,7 @@ class Module {
                     return;
                 }
 
-                let urlsplit = url.split("/");
-                let packname = urlsplit[urlsplit.length - 1];
+                let packname = matchList[0][2];
                 console.log("packname:", packname);
                 let response = await got(`https://api.telegram.org/bot${TG_BOT_API}/getStickerSet?name=${packname}`);
                 let packjson = JSON.parse(response.body);
@@ -123,19 +129,20 @@ class Module {
                     msg.reply("Animated sticker packs are not supported. Use only static or video sticker-packs for telegram.", msg.from)
                     return;
                 }
-                for (const sticker of packjson['result']['stickers']) {
+                for (var i = 0; i < Math.min(maxcount, packjson['result']['stickers'].length); i++) {
+                    let sticker = packjson['result']['stickers'][i];
                     let stickeres = await got(`https://api.telegram.org/bot${TG_BOT_API}/getFile?file_id=${sticker['file_id']}`);
                     let stickerjson = JSON.parse(stickeres.body);
                     console.log(stickerjson['result']['file_path']);
 
-                    if(stickerjson['result']['file_path'].includes('webp')){
+                    if (stickerjson['result']['file_path'].includes('webp')) {
                         console.log("webp sticker");
-                        let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`, {unsafeMime: true});
+                        let media = await MessageMedia.fromUrl(`https://api.telegram.org/file/bot${TG_BOT_API}/${stickerjson['result']['file_path']}`, { unsafeMime: true });
                         await client.sendMessage(msg.from, media, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' });
                         await new Promise(resolve => setTimeout(resolve, 1234));
                     }
-                    
-                    else{
+
+                    else {
                         console.log("Not .webp");
                         let filename = stickerjson['result']['file_path'].split('/')[1];
                         let filepath = "./modules/sticker/tmp/" + filename;
@@ -148,13 +155,13 @@ class Module {
                         // await exec(`ffmpeg -i "${filepath}" -c libwebp -y "${newpath}"`);
                         let media = MessageMedia.fromFilePath(newpath);
                         console.log("Sticker size, ", media.mimetype, media.filesize);
-                        try{
+                        try {
                             await client.sendMessage(msg.from, media, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' });
                         }
-                        catch(err){
+                        catch (err) {
                             console.log("Failed sending the sticker,", err);
                         }
-                        
+
                         if (fs.existsSync(filepath)) {
                             fs.rmSync(filepath)
                         }
@@ -164,15 +171,19 @@ class Module {
                     }
                 }
             }
-            else {
-                let media = await MessageMedia.fromUrl(url);
-                await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' })
-            }
+            //Bad practice therefore removed
+            // else {
+            //     let media = await MessageMedia.fromUrl(url);
+            //     await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: 'bonk!', stickerAuthor: 'cheems' })
+            // }
         }
 
         //if the message has media
         if (msg.hasMedia) {
-            await this.fun(msg.body, msg);
+            this.fun(msg.body, msg)
+                .catch(err => {
+                    throw (err)
+                });
         }
 
 
@@ -180,7 +191,10 @@ class Module {
         if (msg.hasQuotedMsg) {
             let quoted = await msg.getQuotedMessage();
             if (quoted.hasMedia) {
-                await this.fun(msg.body, quoted)
+                this.fun(msg.body, quoted)
+                    .catch(err => {
+                        throw (err)
+                    })
             }
         }
     }
