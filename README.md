@@ -15,6 +15,7 @@ A modular Whatsapp bot.
 It will take few minutes depending on your internet connection.
 ![image](https://github.com/bunnykek/cheems-bot/assets/67633271/57f6584b-926f-4ede-abe2-46f78d991553)
 - Now the project will re-open in a proper pre-configured environment/container.
+- Rename `.envexample` file to `.env` and fill the details.
 - To start the bot use the command `node bot.js` or `npm run test`
 
 ### Building modules guide:
