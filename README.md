@@ -39,3 +39,4 @@ It will take few minutes depending on your internet connection.
 - [x] youtube-dl (!ytdl url) 
 - [x] Urban dictionary (!ud query)
 - [x] Wikipedia (!wiki [query], !wikipdf [query])
+- [x] Counting (!count expression)

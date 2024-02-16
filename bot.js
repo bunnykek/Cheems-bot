@@ -19,6 +19,10 @@ for (const module of modules) {
 }
 
 
+let state = {
+	'count': { 'next_num': null, 'warned': false }
+};
+
 const client = new Client({
   authStrategy: new LocalAuth(),
   puppeteer: {
@@ -69,7 +73,7 @@ client.on('message', msg => {
   for (const obj of moduleObjects) {
     for (const cmd of obj.command) {
       if (msg.body.includes(cmd)) {
-        obj.operate(client, msg)
+        obj.operate(client, msg, state)
           .catch(error => {
             console.log(error);
             msg.reply("_Could not process your request :/_")
