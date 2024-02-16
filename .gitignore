@@ -6,6 +6,7 @@ modules/sticker/tmp/
 modules/ytdl/tmp/
 modules/ytdl/cookies.txt
 modules/jiosaavn
+modules/count/tmp.txt
 Session.vim
 
 # Logs
