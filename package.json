@@ -18,7 +18,7 @@
     "qrcode-terminal": "^0.12.0",
     "random-animals-api": "^1.2.6",
     "sanitize-filename": "^1.6.3",
-    "whatsapp-web.js": "^1.23.0",
+    "whatsapp-web.js": "github:alechkos/whatsapp-web.js#forward-with-caption",
     "yt-search": "^2.10.4",
     "ytdl-core": "^4.11.5"
   }

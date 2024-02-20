@@ -51,7 +51,7 @@ client.on('auth_failure', () => {
   console.log('Client is auth_failure!');
 });
 
-client.on('message', msg => {
+client.on('message', async msg => {
   if (msg.body == '!ping') {
     msg.reply('pong!');
   }
