@@ -1,4 +1,5 @@
-# cheems-bot
+![Cheems-bot](https://github.com/bunnykek/Cheems-bot/blob/main/assets/logo.svg)
+# Cheems-bot
 A modular Whatsapp bot.
 
 ### Dev-environment setup:
@@ -40,3 +41,62 @@ It will take few minutes depending on your internet connection.
 - [x] Urban dictionary (!ud query)
 - [x] Wikipedia (!wiki [query], !wikipdf [query])
 - [x] Counting (!count expression)
+
+### !help
+```
+Cheems bot
+
+!cat: Get a cat.
+
+!dog: Get a dog.
+
+!fwd: Reply the quoted message as forwarded.
+
+!fwds: Show the forward score.
+
+!gemini: Connect with Gemini AI, To start new conversation use !gemini query
+
+...: To continue the conversation use ... query
+
+!meme: !meme [subreddit]
+
+!rmeme: Random meme.
+
+!rsong: Random music.
+!rsong [Genre]
+
+!ranime: Random anime character.
+
+!song: !song name/yt-url
+
+!sticker: Reply or send media with !sticker to get it back as a sticker also supports Telegram sticker packs.
+
+!steal: Reply to a sticker to steal it.
+
+!image: Converts the sticker to image.
+
+!square: Get back the media as 1:1 cropped sticker.
+
+!ud: Get the Urban Dictionary definition.
+!ud word
+
+!wiki: Get the Wikipedia summary.
+!wiki [query]
+
+!wikipdf: Get the Wikipedia article in PDF format.
+!wikipdf [query]
+
+!yp: Shows the current year progress.
+
+!ytdl: Downloads video from various services.
+!ytdlp URL
+```
+
+## Screenshots
+### Backend/Terminal
+![image](https://github.com/bunnykek/Cheems-bot/assets/67633271/a6591070-f2fe-4c31-b138-dbed4e80a22a)
+
+### Frontend/Whatsapp-Client
+![collage (3)](https://github.com/bunnykek/Cheems-bot/assets/67633271/727fa4a5-20be-4ef7-9463-a8ce5b2afbad)
+
+##### Make sure to star the project if it was helpful to you.
