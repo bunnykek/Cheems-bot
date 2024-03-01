@@ -6,23 +6,13 @@ class Module {
 	/** @type {string[]} */
 	command = [
 		'!cat',
-		'!dog',
-		'!bunny',
-		'!duck',
-		'!fox',
-		'!lizard',
-		'!shiba'
+		'!dog'
 	];
 
 	/** @type {string[]} */
 	description = [
-		'Get random pic of a kitty cat',
-		'See a random dog with this command',
-		'See pic of a random bunny',
-		'Get a quacking duck with this command',
-		'Get random pic of a fox',
-		'See pic of a lizard',
-		'Get a shiba pic on the chat'
+		'Get a cat.',
+		'Get a dog.'
 	];
 
 	/**

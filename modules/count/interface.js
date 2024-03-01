@@ -4,7 +4,7 @@ const fs = require("fs");
 
 class Module {
 	/** @type {string[]} */
-	command = ['!c', '!cnt', '!count'];
+	command = ['!c'];
 
 	/** @type {string[]} */
 	description = [ 'This command is used to increase the previous count, you need to pass an integer or an expression that evaluates to an integer 1 more than previous value (initialized with 0)' ];

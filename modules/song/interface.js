@@ -9,7 +9,7 @@ class Module {
 	command = ['!song'];
 
 	/** @type {string[]} */
-	description = ['Pass the song name or youtube link of the song along with the command to download the audio of the song.'];
+	description = ['_!song name/yt-url_'];
 
 	/**
 	 * @param {Client} client

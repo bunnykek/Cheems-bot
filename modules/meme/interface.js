@@ -6,7 +6,7 @@ class Module {
     command = ['!meme'];
 
     /** @type {string[]} */
-    description = ['This command sends a random meme from reddit, optionally you can send the subreddit\'s name from which you want meme.']
+    description = ['_!meme [subreddit]_']
 
     /**
      * @param {Client} client
