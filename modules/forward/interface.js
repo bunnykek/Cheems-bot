@@ -1,11 +1,17 @@
 const { Message, MessageMedia } = require('whatsapp-web.js');
 
 class Module {
-	/** @type {string[]} */
-	command = ['!fwd', '!fwds'];
+	/** @type {string} */
+	name = 'Forward'
 
-	/** @type {string[]} */
-	description = ['Reply the quoted message as forwarded.', 'Show the forward score.']
+	/** @type {string} */
+	description = 'Messaging forwarding features.'
+
+	/** @type {JSON} */
+	commands = {
+		'fwd': 'Reply the quoted message as forwarded.',
+		'fwds': 'Show the forward score.',
+	};
 
 	/**
 	 * @param {Client} client
@@ -13,12 +19,12 @@ class Module {
 	 */
 
 	async operate(client, msg) {
-		if(msg.body == '!fwd' && msg.hasQuotedMsg){
+		if(msg.body == `${process.env.PREFIX}fwd` && msg.hasQuotedMsg){
 			let message = await msg.getQuotedMessage()
 			message.forward(msg.from)
 		}
 
-		if(msg.body == '!fwds' && msg.hasQuotedMsg){
+		if(msg.body == `${process.env.PREFIX}fwds` && msg.hasQuotedMsg){
 			let message = await msg.getQuotedMessage()
 			message.reply(`_${message.forwardingScore} forwards._`)
 		}

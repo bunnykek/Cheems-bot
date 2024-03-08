@@ -3,13 +3,20 @@ const fs = require("fs");
 const ytdl = require("ytdl-core");
 const yts = require("yt-search");
 var sanitize = require("sanitize-filename");
+require('dotenv').config()
 
 class Module {
-	/** @type {string[]} */
-	command = ['!song'];
 
-	/** @type {string[]} */
-	description = ['_!song name/yt-url_'];
+	/** @type {string} */
+	name = 'Song'
+
+	/** @type {string} */
+	description = 'Download songs.'
+
+	/** @type {JSON} */
+	commands = {
+		'song': `${process.env.PREFIX}song name/yt-url`,
+	};
 
 	/**
 	 * @param {Client} client
@@ -25,7 +32,7 @@ class Module {
 		}
 
 		let songName;
-		const regxmatch = msg.body.match(/!song (.+)/);
+		const regxmatch = msg.body.slice(1).match(/song (.+)/);
 		if (regxmatch) {
 			songName = regxmatch[1];
 		} else {

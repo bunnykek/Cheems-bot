@@ -1,12 +1,21 @@
 const { Message, MessageMedia } = require('whatsapp-web.js');
 const got = require('got');
+require('dotenv').config()
 
 class Module {
-    /** @type {string[]} */
-    command = ['!wiki', '!wikipdf'];
 
-    /** @type {string[]} */
-    description = ['Get the Wikipedia summary.\n_!wiki [query]_', 'Get the Wikipedia article in PDF format.\n_!wikipdf [query]_']
+    /** @type {string} */
+	name = 'Wikipedia'
+
+	/** @type {string} */
+	description = 'Get Wikipedia articles.'
+
+	/** @type {JSON} */
+	commands = {
+		'wiki': `Get the Wikipedia summary.\n${process.env.PREFIX}wiki [query]`,
+		'wikipdf': `Get the Wikipedia article in PDF format.\n${process.env.PREFIX}wikipdf [query]`,
+	};
+
 
     /**
      * @param {Client} client
@@ -20,9 +29,9 @@ class Module {
             return jsondata['items'][0]['title'];
         }
 
-        if(msg.body.includes('!wikipdf')){
+        if(msg.body.includes(`${process.env.PREFIX}wikipdf`)){
             var query;
-            const regxmatch = msg.body.match(/!wikipdf (.+)/);
+            const regxmatch = msg.body.slice(1).match(/wikipdf (.+)/);
             if (regxmatch) {
                 query = regxmatch[1];
             }
@@ -36,7 +45,7 @@ class Module {
             await msg.reply(media, msg.from, {sendMediaAsDocument: true});
         }
 
-        else if (msg.body.includes('!wiki')) {
+        else if (msg.body.includes(`${process.env.PREFIX}wiki`)) {
             var query;
             const regxmatch = msg.body.match(/!wiki (.+)/);
             if (regxmatch) {

@@ -3,17 +3,17 @@ const animals = require('random-animals-api');
 const got = require('got');
 
 class Module {
-	/** @type {string[]} */
-	command = [
-		'!cat',
-		'!dog'
-	];
+	/** @type {string} */
+	name = 'Animals'
 
-	/** @type {string[]} */
-	description = [
-		'Get a cat.',
-		'Get a dog.'
-	];
+	/** @type {string} */
+	description = 'For fetching random animal images.'
+
+	/** @type {JSON} */
+	commands = {
+		'cat': 'Get a cat.',
+		'dog': 'Get a dog.',
+	};
 
 	/**
 	 * @pram {Client} client
@@ -22,9 +22,9 @@ class Module {
 
 	async operate (client, msg) {
 		let animal = null;
-		for (let tag of this.command) {
+		for (let tag of Object.keys(this.commands)) {
 			if (msg.body.includes(tag)) {
-				animal = tag.slice(1);
+				animal = tag;
 				break;
 			}
 		}

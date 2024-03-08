@@ -1,12 +1,22 @@
 const { Message, MessageMedia, Client } = require('whatsapp-web.js');
 const got = require('got');
+require('dotenv').config()
 
 class Module {
-	/** @type {string[]} */
-	command = ['!rmeme', '!rsong', '!ranime'];
+	/** @type {string} */
+	name = 'Random'
 
-	/** @type {string[]} */
-	description = ['Random meme.', 'Random music.\n_!rsong [Genre]_', 'Random anime character.']
+	/** @type {string} */
+	description = 'For fetching random memes, songs and anime characters.'
+
+	/** @type {JSON} */
+	commands = {
+		'rmeme': `Random meme.\n${process.env.PREFIX}rmeme [n]`,
+		'rsong': `Random music.\n${process.env.PREFIX}rsong [Genre]`,
+		'rsong2': `Random music from another API.`,
+		'ranime': 'Random anime character.'
+	};
+
 
 	/**
 	 * @param {Client} client
@@ -21,16 +31,43 @@ class Module {
 			quote = await msg.getQuotedMessage();
 		}
 		try {
-			if (msg.body.includes('!rmeme')) {
-				media = await MessageMedia.fromUrl('https://img.randme.me/', { unsafeMime: true });
-				await quote.reply(media, quote.from);
+			if (msg.body.includes(`${process.env.PREFIX}rmeme`)) {
+				let count = 1
+				const regexmatch = msg.body.slice(1).match(/rmeme (\d+)/)
+				if (regexmatch) {
+					count = Math.min(parseInt(regexmatch[1]), 5)
+				}
+				while (count--) {
+					let memeMedia = await MessageMedia.fromUrl('https://img.randme.me/', { unsafeMime: true });
+					client.sendMessage(quote.from, memeMedia);
+				}
 			}
 
-			if (msg.body.includes('!rsong')) {
+			if (msg.body.includes(`${process.env.PREFIX}rsong2`)) {
+				
+				let response = await got(`https://randofy.vercel.app/api/random`)
+				let jsondata = JSON.parse(response.body);
+				let trackname = jsondata['track_name'];
+				let imageurl = jsondata['album_image']['url'];
+				let spotifyurl = jsondata['spotify_url'];
+				// let releasedate = jsondata['release_date'];
+				let artist = jsondata['track_artist'];
+				let image = await MessageMedia.fromUrl(imageurl, { unsafeMime: true });
+				let message = `*${trackname}* by ${artist}\n${spotifyurl}`
+
+
+				//Fetching the mp3-preview
+				let media = await MessageMedia.fromUrl(jsondata['preview_url'], { unsafeMime: true, filename: trackname + '.mp3' });
+				let sentmsg = await quote.reply(image, quote.from, { caption: message });
+				await client.sendMessage(quote.from, media, { sendAudioAsVoice: true });
+				console.log("Sent the random track and preview");
+			}
+
+			else if (msg.body.includes(`${process.env.PREFIX}rsong`)) {
 
 				let genre = "pop";
 
-				const regxmatch = msg.body.match(/!rsong (.+)/);
+				const regxmatch = msg.body.slice(1).match(/rsong (.+)/);
 				if (regxmatch) {
 					genre = regxmatch[1].replace(' ', '_');
 				}
@@ -56,7 +93,7 @@ class Module {
 				console.log("Sent the random track and preview");
 			}
 
-			if (msg.body.includes('!ranime')) {
+			else if (msg.body.includes(`${process.env.PREFIX}ranime`)) {
 				let r1 = Math.floor(Math.random() * 2817 + 1);
 				let response = await got(`https://api.jikan.moe/v4/top/characters?page=${r1}`)
 				// console.log(response.body);

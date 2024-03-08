@@ -2,7 +2,7 @@ const qrcode = require('qrcode-terminal');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const fs = require('fs');
 
-const logo ='  /$$$$$$  /$$                                                          /$$                   /$$    \n /$$__  $$| $$                                                         | $$                  | $$    \n| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$/$$$$   /$$$$$$$       | $$$$$$$   /$$$$$$  /$$$$$$  \n| $$      | $$__  $$ /$$__  $$ /$$__  $$| $$_  $$_  $$ /$$_____//$$$$$$| $$__  $$ /$$__  $$|_  $$_/  \n| $$      | $$  \\ $$| $$$$$$$$| $$$$$$$$| $$ \\ $$ \\ $$|  $$$$$$|______/| $$  \\ $$| $$  \\ $$  | $$    \n| $$    $$| $$  | $$| $$_____/| $$_____/| $$ | $$ | $$ \\____  $$       | $$  | $$| $$  | $$  | $$ /$$\n|  $$$$$$/| $$  | $$|  $$$$$$$|  $$$$$$$| $$ | $$ | $$ /$$$$$$$/       | $$$$$$$/|  $$$$$$/  |  $$$$/\n \\______/ |__/  |__/ \\_______/ \\_______/|__/ |__/ |__/|_______/        |_______/  \\______/    \\___/  \n                                             A modular WhatsApp bot\n                                                 --by @bunnykek'
+const logo = '  /$$$$$$  /$$                                                          /$$                   /$$    \n /$$__  $$| $$                                                         | $$                  | $$    \n| $$  \\__/| $$$$$$$   /$$$$$$   /$$$$$$  /$$$$$$/$$$$   /$$$$$$$       | $$$$$$$   /$$$$$$  /$$$$$$  \n| $$      | $$__  $$ /$$__  $$ /$$__  $$| $$_  $$_  $$ /$$_____//$$$$$$| $$__  $$ /$$__  $$|_  $$_/  \n| $$      | $$  \\ $$| $$$$$$$$| $$$$$$$$| $$ \\ $$ \\ $$|  $$$$$$|______/| $$  \\ $$| $$  \\ $$  | $$    \n| $$    $$| $$  | $$| $$_____/| $$_____/| $$ | $$ | $$ \\____  $$       | $$  | $$| $$  | $$  | $$ /$$\n|  $$$$$$/| $$  | $$|  $$$$$$$|  $$$$$$$| $$ | $$ | $$ /$$$$$$$/       | $$$$$$$/|  $$$$$$/  |  $$$$/\n \\______/ |__/  |__/ \\_______/ \\_______/|__/ |__/ |__/|_______/        |_______/  \\______/    \\___/  \n                                             A modular WhatsApp bot\n                                                 --by @bunnykek'
 console.log(logo);
 console.log("Loading the modules...");
 
@@ -10,18 +10,15 @@ console.log("Loading the modules...");
 const directoryPath = './modules';
 
 const modules = fs.readdirSync(directoryPath)
-const moduleObjects = [];
+const moduleObjects = {};
 
 for (const module of modules) {
-  console.log(module);
+  if (module[0] == '.') continue;
   moduleClass = require(`${directoryPath}/${module}/interface.js`);
-  moduleObjects.push(new moduleClass());  // Assuming no constructor arguments
+  moduleObjects[module] = new moduleClass();
+  console.log(moduleObjects[module].name);
 }
 
-
-let state = {
-	'count': { 'next_num': null, 'warned': false }
-};
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -52,28 +49,60 @@ client.on('auth_failure', () => {
 });
 
 client.on('message', async msg => {
-  if (msg.body == '!ping') {
+  if (msg.body == `${process.env.PREFIX}ping`) {
     msg.reply('pong!');
   }
 
-  if (msg.body == '!alive') {
-    msg.reply('beep boop!');
+  if (msg.body == `${process.env.PREFIX}alive`) {
+    msg.reply('beep-boop!');
   }
 
-  if (msg.body == '!help') {
-    let helpstring = `*Cheems bot*\n\n`
-    moduleObjects.forEach(obj => {
-      for (i = 0; i < obj.command.length; i++) {
-        helpstring += `*${obj.command[i]}:* ${obj.description[i]}\n\n`
+  if (msg.body.includes(`${process.env.PREFIX}help`)) {
+    if (msg.body.toLowerCase().includes('-v')) {
+      let helpstring = `*Cheems-bot*\n\nAvailable commands:\n`;
+      for (const [_, module] of Object.entries(moduleObjects)) {
+        for (const [cmd, desc] of Object.entries(module.commands)) {
+          helpstring += `*${process.env.PREFIX}${cmd}*\n> ${desc.replace('\n', '\n> ')}\n\n`
+        }
       }
-    })
-    msg.reply(helpstring);
+      msg.reply(helpstring.trim());
+      return;
+    }
+
+    if (msg.body.split(' ').length == 1) {
+      let helpstring = `*Cheems-bot*\n\nModule description:\n> ${process.env.PREFIX}help module1 module2...\n\n*Available modules:*\n`;
+      for (const [_, module] of Object.entries(moduleObjects)) {
+        let cmdList = []
+        for (const [cmd, _] of Object.entries(module.commands)) cmdList.push(`${process.env.PREFIX}${cmd}`)
+        helpstring += `${module.name}\n> ${module.description}\n> ${cmdList.join(', ')}\n\n`
+      }
+      helpstring += `To list all the commands:\n> ${process.env.PREFIX}help -v`
+      msg.reply(helpstring.trim());
+      return;
+    }
+
+    else {
+      let helpstring = '*Module commands:*\n\n'
+      let added = 0;
+      for (const arg of msg.body.toLowerCase().split(' ')) {
+        if (arg in moduleObjects) {
+          added = 1;
+          helpstring += `*${moduleObjects[arg].name}*\n> ${moduleObjects[arg].description}\n\n`;
+          for (const [cmd, desc] of Object.entries(moduleObjects[arg].commands)) {
+            helpstring += `${process.env.PREFIX}${cmd}\n> ${desc.replace('\n', '\n> ')}\n\n`
+          }
+        }
+      }
+      if(!added) msg.reply("_No module(s) found._")
+      else msg.reply(helpstring.trim())
+    }
+    return;
   }
 
-  for (const obj of moduleObjects) {
-    for (const cmd of obj.command) {
-      if (msg.body.includes(cmd)) {
-        obj.operate(client, msg, state)
+  for (const [_, module] of Object.entries(moduleObjects)) {
+    for (const [cmd, _] of Object.entries(module.commands)) {
+      if (msg.body.includes(`${process.env.PREFIX}${cmd}`)) {
+        module.operate(client, msg)
           .catch(error => {
             console.log(error);
             msg.reply("_Could not process your request :/_")

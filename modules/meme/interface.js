@@ -1,12 +1,20 @@
 const { Message, MessageMedia } = require('whatsapp-web.js');
 const got = require('got');
+require('dotenv').config()
+
 
 class Module {
-    /** @type {string[]} */
-    command = ['!meme'];
 
-    /** @type {string[]} */
-    description = ['_!meme [subreddit]_']
+    /** @type {string} */
+	name = 'Meme'
+
+	/** @type {string} */
+	description = 'Get random memes from reddit.'
+
+	/** @type {JSON} */
+	commands = {
+		'meme': `${process.env.PREFIX}meme [subreddit]`,
+	};
 
     /**
      * @param {Client} client
@@ -17,7 +25,8 @@ class Module {
         let subreddit = '';
         let meme_api = "https://meme-api.com/gimme/meme/50";
 
-        const regxmatch = msg.body.match(/!meme (.+)/);
+        const regex = new RegExp(`${process.env.PREFIX}meme (.+)`)
+        const regxmatch = msg.body.match(regex);
         if (regxmatch) {
             subreddit = regxmatch[1].split(' ')[0];
             meme_api = `https://meme-api.com/gimme/${subreddit}/50`

@@ -2,9 +2,6 @@ const { MessageMedia, Message, Client } = require('whatsapp-web.js');
 const got = require('got')
 const { promisify } = require('util');
 const exec = promisify(require('child_process').exec)
-
-
-
 const fs = require('fs');
 require('dotenv').config()
 
@@ -17,16 +14,19 @@ if (!fs.existsSync('./modules/sticker/tmp/')) {
 }
 
 class Module {
-    /** @type {string[]} */
-    command = ['!sticker', '!steal', '!image', '!square'];
+    /** @type {string} */
+    name = 'Sticker'
 
-    /** @type {string[]} */
-    description = [
-        'Reply or send media with _!sticker_ to get it back as a sticker also supports Telegram sticker packs.',
-        'Reply to a sticker to steal it.',
-        'Converts the sticker to image.',
-        'Get back the media as 1:1 cropped sticker.'
-    ];
+    /** @type {string} */
+    description = 'Create stickers.'
+
+    /** @type {JSON} */
+    commands = {
+        'sticker': `Reply or send media with ${process.env.PREFIX}sticker, also supports Telegram sticker packs. For a custom name and author use\n${process.env.PREFIX}sticker packName-authorName`,
+        'steal': 'Reply to a sticker to steal it.',
+        'image': 'Converts the sticker to image.',
+        'square': 'Get back the media as 1:1 cropped sticker.'
+    };
 
     /** 
      * @param {string} msg_string
@@ -49,12 +49,12 @@ class Module {
         let media = await msg.downloadMedia();
         console.log(media.mimetype);
 
-        if (msg_string.includes("!sticker") || msg_string.includes('!steal')) {
+        if (msg_string.includes(`${process.env.PREFIX}sticker`) || msg_string.includes(`${process.env.PREFIX}steal`)) {
             await msg.reply(media, msg.from, { sendMediaAsSticker: true, stickerName: stkName, stickerAuthor: stkAuth })
         }
 
 
-        if (msg_string.includes("!square")) {
+        if (msg_string.includes(`${process.env.PREFIX}square`)) {
             let randno = (Math.random() * 100 + 100).toString();
             let filextension = media.mimetype.split('/')[1];
             let filepath = "./modules/sticker/tmp/" + randno + '.' + filextension;
@@ -89,7 +89,7 @@ class Module {
 
         }
 
-        if (msg_string.includes("!image")) {
+        if (msg_string.includes(`${process.env.PREFIX}image`)) {
             await msg.reply(media, msg.from)
         }
     }
