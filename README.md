@@ -20,77 +20,38 @@ It will take few minutes depending on your internet connection.
 - To start the bot use the command `node bot.js` or `npm run test`
 
 ### Building modules guide:
-- Use [sticker](https://github.com/bunnykek/cheems-bot/blob/main/modules/sticker/interface.js) module for reference.
+- Use [forward](https://github.com/bunnykek/Cheems-bot/blob/main/modules/forward/interface.js) module for reference.
 - Each module should contain a file named `"interface.js"`.
 - `"interface.js"` must contain a class named `"Module"`.
-- `"Module"` Class must contain these three things.
-  - command variable. `command = ['!sticker', '!steal']`
-  - description variable. `description = ['!sticker desc.', '!steal desc.']`
-  - operate(client, message) function.
+- `"Module"` Class must contain these four methods.
+  - Module name. `name = 'Forward'`
+  - Module description. `description = 'Messaging forwarding features.'`
+  - `operate(client, message)` function.
+  - Module commands. 
+```
+commands = {
+		'fwd': 'Reply the quoted message as forwarded.',
+		'fwds': 'Show the forward score.',
+	};
+```
 
 ### Modules To-do list:
-- [x] Sticker (!sticker, !steal, !image, !square)
-- [ ] Group management (!warn, !ban, !kick, etc)
+- [x] Animal module (!cat, !dog)
+- [x] Forward (!fwd, !fwds)
 - [x] AI Chatbot (!gemini query)
-- [x] Music (!song query)
-- [x] Year progress 
-- [x] Animal module (!cat, !dog, !bunny, etc)
-- [x] Random (!rmeme, !ranime, !rsong)
 - [x] Meme (!meme [subreddit])
-- [x] youtube-dl (!ytdl url) 
+- [x] Random (!rmeme, !ranime, !rsong, !rsong2)
+- [x] Song (!song query)
+- [x] Sticker (!sticker, !steal, !image, !square)
 - [x] Urban dictionary (!ud query)
 - [x] Wikipedia (!wiki [query], !wikipdf [query])
-- [x] Counting (!count expression)
+- [x] Year progress (!yp)
+- [x] youtube-dl (!ytdl url) 
+- [ ] Group management (!warn, !ban, !kick, etc)
 
 ### !help
-```
-Cheems bot
+<img src="https://github.com/bunnykek/Cheems-bot/assets/67633271/1fa89438-921f-499a-b7e6-b8ff473ad7ac" width="300"> 
 
-!cat: Get a cat.
-
-!dog: Get a dog.
-
-!fwd: Reply the quoted message as forwarded.
-
-!fwds: Show the forward score.
-
-!gemini: Connect with Gemini AI, To start new conversation use !gemini query
-
-...: To continue the conversation use ... query
-
-!meme: !meme [subreddit]
-
-!rmeme: Random meme.
-
-!rsong: Random music.
-!rsong [Genre]
-
-!ranime: Random anime character.
-
-!song: !song name/yt-url
-
-!sticker: Reply or send media with !sticker to get it back as a sticker also supports Telegram sticker packs.
-
-!steal: Reply to a sticker to steal it.
-
-!image: Converts the sticker to image.
-
-!square: Get back the media as 1:1 cropped sticker.
-
-!ud: Get the Urban Dictionary definition.
-!ud word
-
-!wiki: Get the Wikipedia summary.
-!wiki [query]
-
-!wikipdf: Get the Wikipedia article in PDF format.
-!wikipdf [query]
-
-!yp: Shows the current year progress.
-
-!ytdl: Downloads video from various services.
-!ytdlp URL
-```
 
 ## Screenshots
 ### Backend/Terminal
